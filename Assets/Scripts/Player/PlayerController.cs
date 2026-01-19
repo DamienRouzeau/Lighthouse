@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
 
-public class LighthouseLight2D : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     [Header("Références")]
     [SerializeField] private Light2D light2D;
@@ -23,6 +23,9 @@ public class LighthouseLight2D : MonoBehaviour
 
     private Camera mainCamera;
     private Transform lightTransform;
+
+    public Transform debugPoint;
+
 
     void Start()
     {
@@ -45,6 +48,51 @@ public class LighthouseLight2D : MonoBehaviour
         }
     }
 
+    void Update()
+    {
+        if (lightTransform != null)
+        {
+            FollowMouse();
+        }
+        if (Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            Vector2 mouseWorldPos = mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+
+            debugPoint.position = mouseWorldPos;
+        }
+    }
+
+    #region Inputs
+    public void OnClick(InputValue value)
+    {
+        if (!value.isPressed) return;
+
+        Vector2 mouseWorldPos = mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+        Collider2D col = Physics2D.OverlapPoint(mouseWorldPos);
+
+        if (col != null)
+        {
+            Debug.Log("Hit: " + col.name);
+
+            switch (col.tag)
+            {
+                case "Ghost":
+                    col.GetComponent<GhostBehaviour>()?.OnClick();
+                    break;
+
+                case "House":
+                    break;
+
+                default:
+                    Debug.Log("Tag unclickable");
+                    break;
+            }
+        }
+    }
+
+    #endregion
+
+    #region Control light
     void SetupLight()
     {
         // Configuration de la Light 2D
@@ -64,14 +112,6 @@ public class LighthouseLight2D : MonoBehaviour
 
         // Blend mode pour un meilleur effet
         light2D.blendStyleIndex = 0; // Multiply ou Additive selon votre configuration
-    }
-
-    void Update()
-    {
-        if (lightTransform != null)
-        {
-            FollowMouse();
-        }
     }
 
     void FollowMouse()
@@ -132,4 +172,5 @@ public class LighthouseLight2D : MonoBehaviour
             light2D.pointLightOuterRadius = radius;
         }
     }
+    #endregion
 }
