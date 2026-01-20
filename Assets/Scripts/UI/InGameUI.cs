@@ -10,6 +10,10 @@ public class InGameUI : MonoBehaviour
     [SerializeField] private GameObject ghostDialogBox;
     [SerializeField] private TextMeshProUGUI ghostDialog;
     [SerializeField] private TextMeshProUGUI ghostName;
+    private GhostBehaviour currentGhost;
+    private GhostData currentGhostData;
+    private int ghostDialogIndex;
+    [SerializeField] private GameObject choiceSection;
 
     private void Awake()
     {
@@ -24,10 +28,43 @@ public class InGameUI : MonoBehaviour
         }
     }
 
-    public void ActiveGhostBox(bool active, GhostData data)
+    public void ActiveGhostBox(GhostBehaviour _ghost)
     {
-        ghostDialogBox.SetActive(active);
-        ghostDialog.text = data.dialog[0];
-        ghostName.text = data.ghostName;
+        currentGhost = _ghost;
+        currentGhostData = _ghost.GetData();
+        ghostDialogIndex = 0;
+        ghostDialogBox.SetActive(true);
+        ghostDialog.text = currentGhostData.dialog[ghostDialogIndex];
+        ghostName.text = currentGhostData.ghostName;
+        ghostDialogIndex++;
+    }
+
+    public void NextDialog()
+    {
+        if(ghostDialogIndex >= currentGhostData.dialog.Length) // End of the current dialog
+        {
+            choiceSection.SetActive(true);
+        }
+        else // Next dialog
+        {
+            ghostDialog.text = currentGhostData.dialog[ghostDialogIndex];
+            ghostDialogIndex++;
+        }
+    }
+
+    public void AcceptGhost(bool _ghostAccepted)
+    {
+        currentGhost.IsChoosed(_ghostAccepted);
+        currentGhost = null;
+        currentGhostData = null;
+        ghostDialogIndex = 0;
+        choiceSection.SetActive(false);
+        ghostDialogBox.SetActive(false);
+    }
+
+    public bool IsCurrentlyInDialog()
+    {
+        if (currentGhost != null) return true;
+        return false;
     }
 }

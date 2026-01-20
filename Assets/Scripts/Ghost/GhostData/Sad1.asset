@@ -10,14 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 84d0b95c750127246bb084be9a42bd4c, type: 3}
-  m_Name: test
+  m_Name: Sad1
   m_EditorClassIdentifier: Assembly-CSharp::GhostData
-  name: ghost1
+  ghostName: Ghostinou
   dialog:
-  - Lorem ipsum
-  - dolor sit amet
-  - consectetur adipiscing elit
-  - sed do eiusmod tempor incididunt ut labore et dolore magna aliqua
-  - Ut enim ad minim veniam
-  - quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat
-  karma: 5
+  - '*Snif snif*'
+  - Je pleure
+  - T'as vue ?
+  - Je suis triste
+  - Tu veux de moi
+  - J'ai personne d'autre
+  karma: 2
+  mentalHealth: -5
+  soulType: 0

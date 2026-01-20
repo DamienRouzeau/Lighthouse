@@ -4,6 +4,13 @@ using UnityEngine.Rendering.Universal;
 
 public class PlayerController : MonoBehaviour
 {
+    private static PlayerController Instance = null;
+    public static PlayerController instance => Instance;
+    [Header("Data")]
+    [SerializeField] private float karma;
+    [SerializeField] private float mentalHealth;
+
+
     [Header("Références")]
     [SerializeField] private Light2D light2D;
 
@@ -24,8 +31,18 @@ public class PlayerController : MonoBehaviour
     private Camera mainCamera;
     private Transform lightTransform;
 
-    public Transform debugPoint;
-
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
 
     void Start()
     {
@@ -56,28 +73,31 @@ public class PlayerController : MonoBehaviour
         }
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            Vector2 mouseWorldPos = mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+            Vector2 _mouseWorldPos = mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
 
-            debugPoint.position = mouseWorldPos;
         }
     }
 
     #region Inputs
-    public void OnClick(InputValue value)
+    public void OnClick(InputValue _value)
     {
-        if (!value.isPressed) return;
-
-        Vector2 mouseWorldPos = mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-        Collider2D col = Physics2D.OverlapPoint(mouseWorldPos);
-
-        if (col != null)
+        if (!_value.isPressed) return;
+        if(InGameUI.instance.IsCurrentlyInDialog())
         {
-            Debug.Log("Hit: " + col.name);
+            InGameUI.instance.NextDialog();
+            return;
+        }
+        Vector2 _mouseWorldPos = mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+        Collider2D _col = Physics2D.OverlapPoint(_mouseWorldPos);
 
-            switch (col.tag)
+        if (_col != null)
+        {
+            Debug.Log("Hit: " + _col.name);
+
+            switch (_col.tag)
             {
                 case "Ghost":
-                    col.GetComponent<GhostBehaviour>()?.OnClick();
+                    _col.GetComponent<GhostBehaviour>()?.OnClick();
                     break;
 
                 case "House":
@@ -117,32 +137,32 @@ public class PlayerController : MonoBehaviour
     void FollowMouse()
     {
         // Récupérer la position de la souris
-        Vector2 mouseScreenPos = Mouse.current.position.ReadValue();
-        Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(new Vector3(mouseScreenPos.x, mouseScreenPos.y, mainCamera.nearClipPlane));
-        mouseWorldPos.z = transform.position.z;
+        Vector2 _mouseScreenPos = Mouse.current.position.ReadValue();
+        Vector3 _mouseWorldPos = mainCamera.ScreenToWorldPoint(new Vector3(_mouseScreenPos.x, _mouseScreenPos.y, mainCamera.nearClipPlane));
+        _mouseWorldPos.z = transform.position.z;
 
         // Calculer la direction vers la souris
-        Vector3 direction = transform.position - mouseWorldPos;
+        Vector3 _direction = transform.position - _mouseWorldPos;
 
         // Calculer l'angle en degrés
-        float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        float _targetAngle = Mathf.Atan2(_direction.y, _direction.x) * Mathf.Rad2Deg;
 
         // Appliquer les limites si activées
         if (useLimits)
         {
-            targetAngle = Mathf.Clamp(targetAngle, minAngle, maxAngle);
+            _targetAngle = Mathf.Clamp(_targetAngle, minAngle, maxAngle);
         }
 
         // Appliquer la rotation
         if (smoothRotation)
         {
-            float currentAngle = lightTransform.localEulerAngles.z;
-            float smoothAngle = Mathf.LerpAngle(currentAngle, targetAngle, rotationSpeed * Time.deltaTime);
-            lightTransform.localRotation = Quaternion.Euler(0, 0, smoothAngle);
+            float _currentAngle = lightTransform.localEulerAngles.z;
+            float _smoothAngle = Mathf.LerpAngle(_currentAngle, _targetAngle, rotationSpeed * Time.deltaTime);
+            lightTransform.localRotation = Quaternion.Euler(0, 0, _smoothAngle);
         }
         else
         {
-            lightTransform.localRotation = Quaternion.Euler(0, 0, targetAngle);
+            lightTransform.localRotation = Quaternion.Euler(0, 0, _targetAngle);
         }
     }
 
@@ -155,22 +175,34 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void SetIntensity(float intensity)
+    public void SetIntensity(float _intensity)
     {
-        lightIntensity = intensity;
+        lightIntensity = _intensity;
         if (light2D != null)
         {
-            light2D.intensity = intensity;
+            light2D.intensity = _intensity;
         }
     }
 
-    public void SetRadius(float radius)
+    public void SetRadius(float _radius)
     {
-        lightRadius = radius;
+        lightRadius = _radius;
         if (light2D != null && light2D.lightType == Light2D.LightType.Point)
         {
-            light2D.pointLightOuterRadius = radius;
+            light2D.pointLightOuterRadius = _radius;
         }
+    }
+    #endregion
+
+    #region Data
+    public void AddMentalHealth(float _add)
+    {
+        mentalHealth += _add;
+    }
+
+    public void AddKarma(float _add)
+    {
+        karma += _add;
     }
     #endregion
 }
