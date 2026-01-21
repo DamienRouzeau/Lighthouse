@@ -83,23 +83,3 @@ public class GhostsManager : MonoBehaviour
 
 }
 
-[CreateAssetMenu(fileName = "PairTypeOdd", menuName = "ScriptableObject/Ghost/PairTypeOdd", order = 2)]
-public class PairTypeOdd : ScriptableObject
-{
-    public float odd;
-    public Souls type;
-}
-
-[CreateAssetMenu(fileName = "PairTypeData", menuName = "ScriptableObject/Ghost/PairTypeData", order = 3)]
-public class PairTypeData : ScriptableObject
-{
-    public GhostData[] data;
-    public Souls type;
-}
-
-[CreateAssetMenu(fileName = "QTTperNight", menuName = "ScriptableObject/Ghost/QTTperNight", order = 4)]
-public class QTTPerNight : ScriptableObject
-{
-    public int minGhost;
-    public int maxGhost;
-}
