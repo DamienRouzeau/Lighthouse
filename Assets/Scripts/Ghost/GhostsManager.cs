@@ -14,6 +14,7 @@ public class GhostsManager : MonoBehaviour
 
     [Header("Quantity")]
     [SerializeField] private QTTPerNight[] ghostQTTPerNight;
+
     private int nbGhostThisNight;
 
     private void Awake()
@@ -57,7 +58,7 @@ public class GhostsManager : MonoBehaviour
         {
             if(_pair.type == _type)
             {
-                int _random = Random.Range(0, _pair.data.Length - 1);
+                int _random = Random.Range(0, _pair.data.Length);
                 return _pair.data[_random];
             }
         }

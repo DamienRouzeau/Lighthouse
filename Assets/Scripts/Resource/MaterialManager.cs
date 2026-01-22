@@ -8,10 +8,18 @@ public class MaterialManager : MonoBehaviour
     private static MaterialManager Instance = null;
     public static MaterialManager instance => Instance;
 
-    [Header("UI")]
-    [SerializeField] private TextMeshProUGUI woodIndicator;
-    [SerializeField] private TextMeshProUGUI stoneIndicator;
-    [SerializeField] private TextMeshProUGUI tileIndicator;
+    //[Header("UI")]
+    //[SerializeField] private TextMeshProUGUI woodIndicator;
+    //[SerializeField] private TextMeshProUGUI stoneIndicator;
+    //[SerializeField] private TextMeshProUGUI tileIndicator;
+
+    //// ^^ Ajoutez l'UI des ressources ici ^^
+
+    //[SerializeField] private Sprite woodImage;
+    //[SerializeField] private Sprite stoneImage;
+    //[SerializeField] private Sprite tileImage;
+
+    //// ^^ Ajoutez l'image des ressource ici ^^
 
     [Header("Quantity")]
     [SerializeField] private PairTypeQTT[] resources;
@@ -43,7 +51,6 @@ public class MaterialManager : MonoBehaviour
 
     public bool Buy(Resources[] _resources, int[] _price)
     {
-        PairTypeQTT[] _resConcerned;
         for(int i = 0 ; i < _resources.Length ; i++)
         {
             if(!resourcesDict.ContainsKey(_resources[i]) || resourcesDict[_resources[i]] < _price[i])
@@ -84,9 +91,9 @@ public class MaterialManager : MonoBehaviour
 
     private void UpdateUI()
     {
-        woodIndicator.text = resourcesDict[Resources.wood].ToString();
-        stoneIndicator.text = resourcesDict[Resources.stone].ToString();
-        tileIndicator.text = resourcesDict[Resources.tile].ToString();
+        ResourcesLibrary.instance.GetText(Resources.wood).text = resourcesDict[Resources.wood].ToString();
+        ResourcesLibrary.instance.GetText(Resources.stone).text = resourcesDict[Resources.stone].ToString();
+        ResourcesLibrary.instance.GetText(Resources.tile).text = resourcesDict[Resources.tile].ToString();
     }
 
 }

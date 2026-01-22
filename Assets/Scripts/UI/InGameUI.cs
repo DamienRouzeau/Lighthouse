@@ -1,5 +1,7 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.Events;
+
 
 public class InGameUI : MonoBehaviour
 {
@@ -14,6 +16,14 @@ public class InGameUI : MonoBehaviour
     private GhostData currentGhostData;
     private int ghostDialogIndex;
     [SerializeField] private GameObject choiceSection;
+    [SerializeField] private GameObject ghostResourceSection;
+    [SerializeField] private GhostResource ghostResource;
+
+    [Header("Resources")]
+    //[SerializeField] private 
+
+    private UnityEvent choiceMadeEvent = new UnityEvent();
+
 
     private void Awake()
     {
@@ -26,6 +36,9 @@ public class InGameUI : MonoBehaviour
         {
             Instance = this;
         }
+        ghostResourceSection.SetActive(false);
+        choiceSection.SetActive(false);
+        ghostDialogBox.SetActive(false);
     }
 
     public void ActiveGhostBox(GhostBehaviour _ghost)
@@ -43,7 +56,15 @@ public class InGameUI : MonoBehaviour
     {
         if(ghostDialogIndex >= currentGhostData.dialog.Length) // End of the current dialog
         {
+            if (choiceSection.activeInHierarchy) return;
             choiceSection.SetActive(true);
+            ghostResourceSection.SetActive(true);
+            for(int i = 0; i < currentGhostData.resource.Length; i++)
+            {
+                GhostResource _ghostRes = Instantiate(ghostResource, ghostResourceSection.transform);
+                _ghostRes.SetText(currentGhostData.resourceQTT[i]);
+                _ghostRes.SetSprite(currentGhostData.resource[i]);
+            }
         }
         else // Next dialog
         {
@@ -54,12 +75,23 @@ public class InGameUI : MonoBehaviour
 
     public void AcceptGhost(bool _ghostAccepted)
     {
+        choiceMadeEvent?.Invoke();
         currentGhost.IsChoosed(_ghostAccepted);
         currentGhost = null;
         currentGhostData = null;
         ghostDialogIndex = 0;
         choiceSection.SetActive(false);
+        ghostResourceSection.SetActive(false);
         ghostDialogBox.SetActive(false);
+    }
+
+    public void SubscribeChoice(UnityAction _fonction)
+    {
+        choiceMadeEvent.AddListener(_fonction);
+    }
+    public void UnsubscribeChoice(UnityAction _fonction)
+    {
+        choiceMadeEvent.RemoveListener(_fonction);
     }
 
     public bool IsCurrentlyInDialog()
