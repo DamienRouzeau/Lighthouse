@@ -19,6 +19,7 @@ public class GhostBehaviour : MonoBehaviour
     {
         PlayerController.instance.AddMentalHealth(data.mentalHealth);
         PlayerController.instance.AddKarma(data.karma);
+        MaterialManager.instance.AddResource(data.resource, data.resourceQTT);
         // Add material section
         switch (data.soulType) // In case of specific behaviour
         {

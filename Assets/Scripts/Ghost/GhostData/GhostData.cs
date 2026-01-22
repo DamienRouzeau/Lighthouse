@@ -8,6 +8,8 @@ public class GhostData : ScriptableObject
     public float karma;
     public float mentalHealth;
     public Souls soulType;
+    public Resources[] resource;
+    public int[] resourceQTT;
 
 }
 

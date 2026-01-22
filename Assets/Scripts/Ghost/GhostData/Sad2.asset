@@ -20,3 +20,5 @@ MonoBehaviour:
   karma: 5
   mentalHealth: -3
   soulType: 0
+  resource: 01000000
+  resourceQTT: 03000000
